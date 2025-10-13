@@ -1,0 +1,20 @@
+name: Deploy APP_NAME
+run-name: Deploying ${{ github.sha }} to production
+
+on:
+  # Uncomment to deploy on push to main branch on push
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ericgi231-me/shared-workflows/.github/workflows/deploy-webapp.yml@main
+    with:
+      app_name: "APP_NAME"
+      frontend_port: "PORT_NUMBER"
+      node_env: "production"
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}

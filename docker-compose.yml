@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Frontend Container (nginx + React static files)
+  frontend:
+    build:
+      context: ./packages
+      dockerfile: frontend/Dockerfile
+    container_name: microservice-frontend
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=/api
+    networks:
+      - microservice-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Backend Container (Fastify API)
+  backend:
+    build:
+      context: ./packages
+      dockerfile: backend/Dockerfile
+    container_name: microservice-backend
+    ports:
+      - "3001:3001"  # Now externally accessible
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:password@database:5432/webapp_db
+      - PORT=3001
+    networks:
+      - microservice-network
+    depends_on:
+      - database
+    restart: unless-stopped
+
+  # Database Container (PostgreSQL) 
+  database:
+    image: postgres:15-alpine
+    container_name: microservice-database
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_DB=webapp_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./packages/database/init:/docker-entrypoint-initdb.d
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  microservice-network:
+    driver: bridge
