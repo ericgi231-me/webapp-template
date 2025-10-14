@@ -9,14 +9,16 @@ WORKDIR /app
 COPY package*.json ./
 COPY packages/backend/package*.json ./packages/backend/
 
-# Copy shared package
+# Copy only package metadata first to leverage docker layer caching for npm install
+# (package.json/package-lock.json or workspace package metadata). Full sources
+# are copied after install so source changes don't bust the npm install layer.
 COPY packages/shared/package*.json ./packages/shared/
-COPY packages/shared/ ./packages/shared/
 
 # Install dependencies
 RUN npm ci --include-workspace-root
 
-# Copy backend source code
+# Now copy package sources (shared and backend) so builds run using latest source
+COPY packages/shared/ ./packages/shared/
 COPY packages/backend/ ./packages/backend/
 
 # Build shared package first
