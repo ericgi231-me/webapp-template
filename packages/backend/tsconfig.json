@@ -14,6 +14,12 @@
     "types": ["node"],
     // and npm install -D @types/node
 
+    "baseUrl": "./",
+    "paths": {
+      "shared": ["../shared/src/index.ts"],
+      "shared/*": ["../shared/src/*"]
+    },
+
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -38,5 +44,8 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "references": [
+    { "path": "../shared" }
+  ]
 }
