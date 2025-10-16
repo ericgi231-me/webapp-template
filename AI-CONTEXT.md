@@ -12,3 +12,4 @@
 - **No emoji usage** - Do not include emojis in messages or code
 - **No file creation/editing without explicit request** - Only create or modify files when specifically asked
 - **No praise** - Do not include praise in messages, only provide information
+- **No code as plain text** - When providing code in a response, it should always be in a code block

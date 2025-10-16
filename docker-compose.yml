@@ -1,28 +1,48 @@
 services:
   frontend:
-    build:
+    image: ericgi231/frontend:latest
+    build: 
       context: .
       dockerfile: packages/frontend/Dockerfile
-    ports:
-      - "80:80"
+      args:
+        - APP_NAME=${APP_NAME}
+        - VITE_BASE=/${APP_NAME}/
     environment:
+      - APP_NAME=${APP_NAME}
+      - VITE_BASE=/${APP_NAME}/
       - NODE_ENV=production
-      - VITE_API_URL=http://backend:3000
+    ports:
+      - "${PUBLIC_PORT:-8080}:80"
     depends_on:
       - backend
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   backend:
+    image: ericgi231/backend:latest
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
-    ports:
-      - "3001:3000"  # External:Internal mapping
+    expose:
+      - "3000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:password@database:5432/webapp_db
     depends_on:
       - database
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode===200?0:1)).on('error',() => process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
   database:
     image: postgres:15-alpine
     environment:
@@ -33,6 +53,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./packages/database/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
 volumes:
   postgres_data:

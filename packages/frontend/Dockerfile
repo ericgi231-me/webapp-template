@@ -2,6 +2,11 @@
 FROM node:lts-slim AS builder
 WORKDIR /app
 
+ARG VITE_BASE="/"
+ARG APP_NAME="app"
+ENV VITE_BASE=${VITE_BASE}
+ENV APP_NAME=${APP_NAME}
+
 # Copy workspace configuration
 # Copy root package metadata and the frontend package metadata first to use layer caching
 COPY package*.json ./
@@ -21,8 +26,18 @@ RUN npm run build --workspace=packages/frontend
 
 # Production stage - lightweight nginx
 FROM nginx:alpine
-COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html
-# Copy nginx config from the builder stage so it's present in the build context
-COPY --from=builder /app/packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf
+ARG APP_NAME="app"
+ENV APP_NAME=${APP_NAME}
+
+# Install envsubst (gettext) so we can render the nginx template at build time
+RUN apk add --no-cache gettext
+
+# Copy built static assets
+COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html/${APP_NAME}/
+
+# Copy the nginx template from the builder stage and render it at image build time
+COPY --from=builder /app/packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf.template
+RUN envsubst '${APP_NAME}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
