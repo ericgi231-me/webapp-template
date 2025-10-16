@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       public_port:
-        description: 'Public port to reach apps router'
+        description: 'Public port to reach apps router' # TODO: Gracefully handle public port collisions
         required: true
         type: string
       node_env:
@@ -62,7 +62,10 @@ jobs:
           # Build frontend if directory exists and port is configured
           if [ -d "./packages/frontend" ]; then
             echo "Building frontend image..."
-            docker build -t ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} -f ./packages/frontend/Dockerfile .
+            docker build \
+              -t ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} \
+              -f ./packages/frontend/Dockerfile \
+              --build-arg APP_NAME=${{ inputs.app_name }} .
             docker tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.FRONTEND_IMAGE_NAME }}:latest
             IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.FRONTEND_IMAGE_NAME }}:latest"
           fi
@@ -70,7 +73,10 @@ jobs:
           # Build backend if directory exists and port is configured
           if [ -d "./packages/backend" ]; then
             echo "Building backend image..."
-            docker build -t ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} -f ./packages/backend/Dockerfile .
+            docker build \
+              -t ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} \
+              -f ./packages/backend/Dockerfile \
+              --build-arg APP_NAME=${{ inputs.app_name }} .
             docker tag ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.BACKEND_IMAGE_NAME }}:latest
             IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.BACKEND_IMAGE_NAME }}:latest"
           fi
@@ -104,7 +110,7 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           port: 22
           source: "app-images.tar.gz,docker-compose.yml"
-          target: "/var/www/${{ inputs.APP_NAME }}/"
+          target: "/var/www/${{ inputs.app_name }}/"
 
       - name: Deploy on prod server
         uses: appleboy/ssh-action@v1.0.0
@@ -114,18 +120,18 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /var/www/${{ inputs.APP_NAME }}
+            cd /var/www/${{ inputs.app_name }}
             
             # Create .env file for docker-compose
             cat > .env << EOF
-            APP_NAME=${{ inputs.APP_NAME }}
-            PUBLIC_PORT=${{ inputs.PUBLIC_PORT }}
+            APP_NAME=${{ inputs.app_name }}
+            PUBLIC_PORT=${{ inputs.public_port }}
             FRONTEND_IMAGE_NAME=${{ env.FRONTEND_IMAGE_NAME }}
             BACKEND_IMAGE_NAME=${{ env.BACKEND_IMAGE_NAME }}
             DATABASE_NAME=${{ env.DATABASE_NAME }}
             DATABASE_USER=${{ env.DATABASE_USER }}
             DATABASE_VOLUME=${{ env.DATABASE_VOLUME }}
-            NODE_ENV=${{ inputs.NODE_ENV }}
+            NODE_ENV=${{ inputs.node_env }}
             EOF
 
             export DATABASE_PASSWORD="${{ env.DATABASE_PASSWORD }}"
