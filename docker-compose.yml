@@ -6,10 +6,8 @@ services:
       dockerfile: packages/frontend/Dockerfile
       args:
         - APP_NAME=${APP_NAME}
-        - VITE_BASE=/${APP_NAME}/
     environment:
       - APP_NAME=${APP_NAME}
-      - VITE_BASE=/${APP_NAME}/
       - NODE_ENV=production
     ports:
       - "${PUBLIC_PORT:-8080}:80"

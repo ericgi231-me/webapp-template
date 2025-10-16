@@ -10,22 +10,19 @@
     "packages/database"
   ],
   "scripts": {
-    "dev": "concurrently --no-clear --kill-others-on-fail --prefix-colors \"auto\" --names \"FRONT,BACK,SHARED\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:shared\"",
+    "dev": "dotenv -e .env -- concurrently --no-clear --kill-others-on-fail --prefix-colors \"auto\" --names \"FRONT,BACK,SHARED\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:shared\"",
     "dev:frontend": "npm run dev -w frontend",
     "dev:backend": "npm run dev -w backend",
     "dev:shared": "npm run dev -w shared",
-
     "build": "npm run build:shared && npm run build:frontend && npm run build:backend",
     "build:frontend": "npm run build -w frontend",
     "build:backend": "npm run build -w backend",
     "build:shared": "npm run build -w shared",
-
     "start": "npm run preview -w frontend",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "clean": "del-cli \"packages/*/node_modules\" \"packages/*/dist\"",
     "clean:deep": "del-cli \"node_modules\" \"packages/*/node_modules\" \"packages/*/dist\"",
-
     "docker:dev": "docker-compose up --build",
     "docker:prod": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
@@ -36,6 +33,7 @@
     "@eslint/js": "^9.36.0",
     "concurrently": "^8.0.0",
     "del-cli": "^7.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.36.0"
   },
   "engines": {

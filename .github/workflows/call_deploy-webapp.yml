@@ -1,4 +1,4 @@
-name: Deploy APP_NAME
+name: Call deploy web application
 run-name: Deploying ${{ github.sha }} to production
 
 on:
@@ -9,10 +9,10 @@ on:
 
 jobs:
   deploy:
-    uses: ericgi231-me/shared-workflows/.github/workflows/deploy-webapp.yml@main
+    uses: ericgi231-me/webapp-template/.github/workflows/deploy-webapp.yml@main
     with:
-      app_name: "APP_NAME"
-      frontend_port: "PORT_NUMBER"
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+      frontend_port: ${{ vars.PUBLIC_PORT || '8080' }}
       node_env: "production"
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

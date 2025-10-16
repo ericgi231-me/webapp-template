@@ -2,9 +2,7 @@
 FROM node:lts-slim AS builder
 WORKDIR /app
 
-ARG VITE_BASE="/"
 ARG APP_NAME="app"
-ENV VITE_BASE=${VITE_BASE}
 ENV APP_NAME=${APP_NAME}
 
 # Copy workspace configuration

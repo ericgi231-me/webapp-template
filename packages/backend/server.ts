@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import Fastify from 'fastify'
 import app from './app.js'
+import { DEFAULT_CONFIG } from 'shared'
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -26,7 +27,7 @@ fastify.register(app)
 
 const start = async (): Promise<void> => {
   try {
-    const port = 3001;
+    const port = isDev ? Number.parseInt(process.env.VITE_DEV_BACKEND_PORT!) : 3000;
     const host = '0.0.0.0'
     
     await fastify.listen({ port, host })
