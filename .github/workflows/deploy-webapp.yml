@@ -52,6 +52,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: List all files
+        run: ls -R
+
       - name: Build Docker images
         run: |
           IMAGES_TO_SAVE=""
