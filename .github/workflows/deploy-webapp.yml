@@ -62,7 +62,7 @@ jobs:
           # Build frontend if directory exists and port is configured
           if [ -d "./packages/frontend" ]; then
             echo "Building frontend image..."
-            docker build -t ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} ./packages/frontend
+            docker build -t ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} -f ./packages/frontend/Dockerfile .
             docker tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.FRONTEND_IMAGE_NAME }}:latest
             IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.FRONTEND_IMAGE_NAME }}:latest"
           fi
@@ -70,7 +70,7 @@ jobs:
           # Build backend if directory exists and port is configured
           if [ -d "./packages/backend" ]; then
             echo "Building backend image..."
-            docker build -t ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} ./packages/backend
+            docker build -t ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} -f ./packages/backend/Dockerfile .
             docker tag ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.BACKEND_IMAGE_NAME }}:latest
             IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.BACKEND_IMAGE_NAME }}:latest"
           fi
