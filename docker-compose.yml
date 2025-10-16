@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ericgi231/frontend:latest
+    image: ${FRONTEND_IMAGE_NAME:-org/frontend}:latest
     build: 
       context: .
       dockerfile: packages/frontend/Dockerfile
@@ -22,7 +22,7 @@ services:
       start_period: 40s
 
   backend:
-    image: ericgi231/backend:latest
+    image: ${BACKEND_IMAGE_NAME:-org/backend}:latest
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
@@ -47,6 +47,8 @@ services:
       - POSTGRES_DB=webapp_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+    expose:
+      - 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./packages/database/init:/docker-entrypoint-initdb.d

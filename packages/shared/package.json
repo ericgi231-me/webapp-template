@@ -10,7 +10,7 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "dev": "tsc -w --preserveWatchOutput",
+    "dev": "npm run build && tsc -w --preserveWatchOutput",
     "build": "tsc -b --force",
     "lint": "eslint ."
   },

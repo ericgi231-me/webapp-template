@@ -1,4 +1,6 @@
 name: Deploy Web Application
+description: Build images -> Copy to server -> Deploy with Docker Compose (This workflow can be deleted in real apps)
+run-name: Deploying ${{ github.sha }} to production
 on:
   workflow_call:
     inputs:
@@ -26,13 +28,14 @@ on:
         required: false
 
 env:
+  # Images
+  FRONTEND_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-frontend
+  BACKEND_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-backend
   # Database
-  DATABASE_CONTAINER: ${{ inputs.app_name || 'app' }}-database
-  DATABASE_PORT: ${{ inputs.database_port || '' }}
-  DATABASE_NAME: ${{ inputs.app_name || 'app' }}-db
-  DATABASE_USER: ${{ inputs.app_name || 'app' }}-user
+  DATABASE_NAME: ${{ inputs.app_name }}-db
+  DATABASE_USER: ${{ inputs.app_name }}-user
   DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD || '' }}
-  DATABASE_VOLUME: ${{ inputs.app_name || 'app' }}-database-volume
+  DATABASE_VOLUME: ${{ inputs.app_name }}-db-volume
   # Server info
   SERVER_HOST: ${{ secrets.SERVER_HOST }}
   SERVER_USER: ${{ secrets.SERVER_USER }}
@@ -54,19 +57,19 @@ jobs:
           IMAGES_TO_SAVE=""
           
           # Build frontend if directory exists and port is configured
-          if [ -d "./packages/frontend" ] && [ ! -z "${{ env.FRONTEND_PORT }}" ]; then
+          if [ -d "./packages/frontend" ]; then
             echo "Building frontend image..."
-            docker build -t ${{ env.FRONTEND_IMAGE }}:${{ github.sha }} ./packages/frontend
-            docker tag ${{ env.FRONTEND_IMAGE }}:${{ github.sha }} ${{ env.FRONTEND_IMAGE }}:latest
-            IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.FRONTEND_IMAGE }}:latest"
+            docker build -t ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} ./packages/frontend
+            docker tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.FRONTEND_IMAGE_NAME }}:latest
+            IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.FRONTEND_IMAGE_NAME }}:latest"
           fi
           
           # Build backend if directory exists and port is configured
-          if [ -d "./packages/backend" ] && [ ! -z "${{ env.BACKEND_PORT }}" ]; then
+          if [ -d "./packages/backend" ]; then
             echo "Building backend image..."
-            docker build -t ${{ env.BACKEND_IMAGE }}:${{ github.sha }} ./packages/backend
-            docker tag ${{ env.BACKEND_IMAGE }}:${{ github.sha }} ${{ env.BACKEND_IMAGE }}:latest
-            IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.BACKEND_IMAGE }}:latest"
+            docker build -t ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} ./packages/backend
+            docker tag ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }} ${{ env.BACKEND_IMAGE_NAME }}:latest
+            IMAGES_TO_SAVE="$IMAGES_TO_SAVE ${{ env.BACKEND_IMAGE_NAME }}:latest"
           fi
           
           # Save all built images
@@ -98,7 +101,7 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           port: 22
           source: "app-images.tar.gz,docker-compose.yml"
-          target: "/var/www/${{ env.APP_NAME }}/"
+          target: "/var/www/${{ inputs.APP_NAME }}/"
 
       - name: Deploy on prod server
         uses: appleboy/ssh-action@v1.0.0
@@ -108,27 +111,18 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /var/www/${{ env.APP_NAME }}
+            cd /var/www/${{ inputs.APP_NAME }}
             
             # Create .env file for docker-compose
             cat > .env << EOF
-            APP_NAME=${{ env.APP_NAME }}
-            FRONTEND_IMAGE=${{ env.FRONTEND_IMAGE }}
-            FRONTEND_CONTAINER=${{ env.FRONTEND_CONTAINER }}
-            FRONTEND_PORT=${{ env.FRONTEND_PORT }}
-            BACKEND_IMAGE=${{ env.BACKEND_IMAGE }}
-            BACKEND_CONTAINER=${{ env.BACKEND_CONTAINER }}
-            BACKEND_PORT=${{ env.BACKEND_PORT }}
-            DATABASE_IMAGE=${{ env.DATABASE_IMAGE }}
-            DATABASE_CONTAINER=${{ env.DATABASE_CONTAINER }}
-            DATABASE_PORT=${{ env.DATABASE_PORT }}
+            APP_NAME=${{ inputs.APP_NAME }}
+            PUBLIC_PORT=${{ inputs.PUBLIC_PORT }}
+            FRONTEND_IMAGE_NAME=${{ env.FRONTEND_IMAGE_NAME }}
+            BACKEND_IMAGE_NAME=${{ env.BACKEND_IMAGE_NAME }}
             DATABASE_NAME=${{ env.DATABASE_NAME }}
             DATABASE_USER=${{ env.DATABASE_USER }}
             DATABASE_VOLUME=${{ env.DATABASE_VOLUME }}
-            NODE_ENV=${{ env.NODE_ENV }}
-
-            # Set in shell for security, not in .env
-            # DATABASE_PASSWORD
+            NODE_ENV=${{ inputs.NODE_ENV }}
             EOF
 
             export DATABASE_PASSWORD="${{ env.DATABASE_PASSWORD }}"
@@ -146,7 +140,7 @@ jobs:
             
             # Clean up old images
             docker image prune -f
-            for image in ${{ env.FRONTEND_IMAGE }} ${{ env.BACKEND_IMAGE }}; do
+            for image in ${{ env.FRONTEND_IMAGE_NAME }} ${{ env.BACKEND_IMAGE_NAME }}; do
               if docker images $image -q 2>/dev/null | head -n 1; then
                 docker images $image --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | tail -n +4 | awk '{print $3}' | head -n -3 | xargs -r docker rmi 2>/dev/null || true
               fi
