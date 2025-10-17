@@ -70,9 +70,14 @@ jobs:
               echo "OPEN" > port_check_result.txt
             fi
 
-            # Export the result as an output using GITHUB_OUTPUT
+            # Debugging: Log the content of port_check_result.txt
+            echo "Content of port_check_result.txt:"
+            cat port_check_result.txt
+
+            # Output the result to the GitHub Actions runner using the script output
             RESULT=$(cat port_check_result.txt)
-            echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+            echo "Port check result: $RESULT"
+            echo "$RESULT"
 
             # Ensure the script does not exit prematurely
             if [ "$RESULT" = "CONFLICT" ]; then
