@@ -1,0 +1,22 @@
+name: test
+run-name: test
+
+on:
+  # Uncomment to deploy on push to main branch on push
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: List all files
+        run: ls -R
+
+      - name: Test
+        run: echo "This is a test"
