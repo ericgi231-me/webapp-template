@@ -77,9 +77,9 @@ jobs:
             # Output the result to the GitHub Actions runner using the script output
             RESULT=$(cat port_check_result.txt)
             echo "Port check result: $RESULT"
-            echo "result=$RESULT" >> $GITHUB_OUTPUT
+            echo "result=$RESULT" >> $GITHUB_ENV
 
-            echo $GITHUB_OUTPUT
+            echo $GITHUB_ENV
 
             # Ensure the script does not exit prematurely
             if [ "$RESULT" = "CONFLICT" ]; then
