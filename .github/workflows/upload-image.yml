@@ -22,7 +22,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-${{ inputs.package_name }}
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/${{ inputs.app_name }}-${{ inputs.package_name }}
 
 jobs:
   test:

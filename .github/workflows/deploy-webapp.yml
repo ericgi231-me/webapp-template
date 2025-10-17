@@ -29,8 +29,8 @@ on:
 
 env:
   # Images
-  FRONTEND_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-frontend
-  BACKEND_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-backend
+  FRONTEND_IMAGE_NAME: ghcr.io/${{ github.repository }}/${{ inputs.app_name }}-frontend
+  BACKEND_IMAGE_NAME: ghcr.io/${{ github.repository }}/${{ inputs.app_name }}-backend
   # Database
   DATABASE_NAME: ${{ inputs.app_name }}-db
   DATABASE_USER: ${{ inputs.app_name }}-user
