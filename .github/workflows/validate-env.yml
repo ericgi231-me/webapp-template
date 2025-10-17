@@ -34,6 +34,24 @@ on:
         required: false
 
 jobs:
+  output-test:
+    runs-on: ubuntu-latest
+    outputs:
+      test-output: ${{ steps.test-step.outputs.test-output }}
+    steps:
+      - name: Test Step
+        id: test-step
+        run: |
+          echo "test-output=HelloWorld" >> $GITHUB_OUTPUT
+
+  output-validate:
+    runs-on: ubuntu-latest
+    needs: output-test
+    steps:
+      - name: Use Output
+        run: |
+          echo "The output from the previous job is: ${{ needs.output-test.outputs.test-output }}"
+
   check-port-status:
     runs-on: ubuntu-latest
     outputs:
