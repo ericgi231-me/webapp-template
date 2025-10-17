@@ -1,5 +1,5 @@
-name: test
-run-name: test
+name: Validate app is running
+run-name: Validate app is running
 
 on:
   workflow_call:

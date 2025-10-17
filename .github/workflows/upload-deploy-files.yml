@@ -1,5 +1,5 @@
-name: test
-run-name: test
+name: Upload Deployment Files to Production Server
+run-name: Upload Deployment Files to Production Server
 
 on:
   workflow_call:

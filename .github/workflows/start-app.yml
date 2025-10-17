@@ -1,5 +1,5 @@
-name: test
-run-name: test
+name: Start Application on Production Server
+run-name: Start Application on Production Server
 
 on:
   workflow_call:

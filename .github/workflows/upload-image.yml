@@ -1,5 +1,5 @@
-name: test
-run-name: test
+name: Upload Docker Image to GitHub Container Registry
+run-name: Upload Docker Image to GitHub Container Registry
 
 on:
   workflow_call:
