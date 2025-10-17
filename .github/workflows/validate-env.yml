@@ -56,7 +56,7 @@ jobs:
 
             # Get the current app port from Docker Compose
             CURRENT_APP_PORT=$(docker ps --filter "label=com.docker.compose.project=${{ inputs.app_name }}" --format "{{.Ports}}" | awk -F'->' '/->/ {print $1}' | awk -F':' '{print $NF}')
-            echo "Given app_name is using port: $CURRENT_APP_PORT"
+            echo "Current application port: $CURRENT_APP_PORT"
 
             # Determine the next step based on port usage
             if echo "$ALL_USED_PORTS" | grep -q "${{ inputs.public_port }}"; then
@@ -72,10 +72,14 @@ jobs:
               echo "OPEN" > port_check_result.txt
             fi
 
-            # Export the result as an output
+            # Debugging: Log the content of port_check_result.txt
+            echo "Content of port_check_result.txt:"
+            cat port_check_result.txt
+
+            # Export the result as an output using GITHUB_OUTPUT
             RESULT=$(cat port_check_result.txt)
             echo "Port check result: $RESULT"
-            echo "::set-output name=result::$RESULT"
+            echo "result=$RESULT" >> $GITHUB_OUTPUT
 
             # Ensure the script does not exit prematurely
             if [ "$RESULT" = "CONFLICT" ]; then
