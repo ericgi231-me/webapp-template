@@ -1,0 +1,58 @@
+name: test
+run-name: test
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: 'Name of the application'
+        required: true
+        type: string
+      public_port:
+        description: 'Public port to reach apps router'
+        required: true
+        type: string
+      package_name:
+        description: 'Name of the package (frontend/backend)'
+        required: true
+        type: string
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}-${{ inputs.package_name }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      image_name: ${{ steps.set-output.outputs.image_name }}
+    steps:
+      - name: Output image name
+        id: set-output
+        run: echo "image_name=${{ env.IMAGE_NAME }}" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          # Build and push image if directory exists
+          if [ -d "./packages/${{ inputs.package_name }}" ]; then
+            echo "Building and pushing ${{ inputs.package_name }} image..."
+            docker build \
+              -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+              -t ${{ env.IMAGE_NAME }}:latest \
+              -f ./packages/frontend/Dockerfile \
+              --build-arg APP_NAME=${{ inputs.app_name }} .
+            docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            docker push ${{ env.IMAGE_NAME }}:latest
+          fi

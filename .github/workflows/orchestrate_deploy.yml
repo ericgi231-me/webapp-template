@@ -8,13 +8,66 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    uses: ericgi231-me/webapp-template/.github/workflows/deploy-webapp.yml@main
+  validate-port-available:
+    uses: ./.github/workflows/validate-port-available.yml
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+
+  upload-frontend-image:
+    needs: validate-port-available
+    uses: ./.github/workflows/upload-image.yml
+    with:
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+      public_port: ${{ vars.PUBLIC_PORT || '8080' }}
+      package_name: frontend
+
+  upload-backend-image:
+    needs: validate-port-available
+    uses: ./.github/workflows/upload-image.yml
+    with:
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+      public_port: ${{ vars.PUBLIC_PORT || '8080' }}
+      package_name: backend
+
+  upload-deploy-files:
+    needs: [upload-frontend-image, upload-backend-image]
+    uses: ./.github/workflows/upload-deploy-files.yml
+    with:
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+      public_port: ${{ vars.PUBLIC_PORT || '8080' }}
+      frontend_image_name: ${{ needs.upload-frontend-image.outputs.image_name }}
+      backend_image_name: ${{ needs.upload-backend-image.outputs.image_name }}
       node_env: "production"
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
+
+  start-app:
+    needs: [upload-frontend-image, upload-backend-image, upload-deploy-files]
+    uses: ./.github/workflows/start-app.yml
+    with:
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+      frontend_image_name: ${{ needs.upload-frontend-image.outputs.image_name }}
+      backend_image_name: ${{ needs.upload-backend-image.outputs.image_name }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+
+  validate-port-reachable:
+    needs: start-app
+    uses: ./.github/workflows/validate-port-reachable.yml
+    with:
+      public_port: ${{ vars.PUBLIC_PORT || '8080' }}
+    secrets:
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+
+  validate-deployment:
+    needs: validate-port-reachable
+    uses: ./.github/workflows/validate-deployment.yml

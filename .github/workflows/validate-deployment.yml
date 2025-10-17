@@ -1,0 +1,12 @@
+name: test
+run-name: test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output image name
+        run: echo "test"
