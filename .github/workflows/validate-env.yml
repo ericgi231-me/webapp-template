@@ -82,6 +82,11 @@ jobs:
               exit 1
             fi
 
+      - name: Debug Port Check Result
+        run: |
+          echo "Debugging the result of the port check step..."
+          echo "Port check result: ${{ steps.check-port.outputs.result }}"
+
       - name: Open Port on Server for Testing (if needed)
         if: ${{ steps.check-port.outputs.result == 'OPEN' }}
         uses: appleboy/ssh-action@v1.0.0
