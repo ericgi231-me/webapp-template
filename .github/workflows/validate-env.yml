@@ -36,7 +36,8 @@ on:
 jobs:
   validate-env:
     runs-on: ubuntu-latest
-
+    outputs:
+      port_check_result: ${{ steps.check-port.outputs.result }}
     steps:
       - name: Check Port availability on Server
         id: check-port # Add an ID to reference outputs
