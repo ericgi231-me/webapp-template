@@ -7,6 +7,10 @@ on:
   #   branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   validate-port-available:
     uses: ./.github/workflows/validate-port-available.yml
