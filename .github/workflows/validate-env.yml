@@ -34,13 +34,10 @@ on:
         required: false
 
 jobs:
-  test:
+  validate-env:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
       - name: Check Port availability on Server
         id: check-port # Add an ID to reference outputs
         uses: appleboy/ssh-action@v1.0.0
@@ -59,7 +56,7 @@ jobs:
 
             # Get the current app port from Docker Compose
             CURRENT_APP_PORT=$(docker ps --filter "label=com.docker.compose.project=${{ inputs.app_name }}" --format "{{.Ports}}" | awk -F'->' '/->/ {print $1}' | awk -F':' '{print $NF}')
-            echo "Current application port: $CURRENT_APP_PORT"
+            echo "Given app_name is using port: $CURRENT_APP_PORT"
 
             # Determine the next step based on port usage
             if echo "$ALL_USED_PORTS" | grep -q "${{ inputs.public_port }}"; then
@@ -68,7 +65,7 @@ jobs:
                 echo "MATCH" > port_check_result.txt
               else
                 echo "Error: Port ${{ inputs.public_port }} is already in use by another application." >&2
-                exit 1
+                echo "CONFLICT" > port_check_result.txt
               fi
             else
               echo "Port ${{ inputs.public_port }} is not in use. Proceeding to open the port for testing."
@@ -77,7 +74,13 @@ jobs:
 
             # Export the result as an output
             RESULT=$(cat port_check_result.txt)
+            echo "Port check result: $RESULT"
             echo "::set-output name=result::$RESULT"
+
+            # Ensure the script does not exit prematurely
+            if [ "$RESULT" = "CONFLICT" ]; then
+              exit 1
+            fi
 
       - name: Open Port on Server for Testing (if needed)
         if: ${{ steps.check-port.outputs.result == 'OPEN' }}
