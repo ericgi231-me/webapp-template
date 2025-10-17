@@ -24,6 +24,10 @@ on:
       SERVER_USER:
         required: true
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
