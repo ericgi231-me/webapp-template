@@ -39,7 +39,7 @@ env:
   DATABASE_VOLUME: ${{ inputs.app_name }}-db-volume
 
 jobs:
-  test:
+  upload-deploy-files:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

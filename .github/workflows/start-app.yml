@@ -29,7 +29,7 @@ permissions:
   packages: read
 
 jobs:
-  test:
+  start-app:
     runs-on: ubuntu-latest
     steps:
       - name: Log in to GitHub Container Registry

@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  test:
+  validate-app-running:
     runs-on: ubuntu-latest
     steps:
       - name: Output image name

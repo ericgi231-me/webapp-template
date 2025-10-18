@@ -16,6 +16,10 @@ on:
         description: 'Name of the package (frontend/backend)'
         required: true
         type: string
+    outputs:
+      image_name:
+        description: 'Name of the uploaded image'
+        value: ${{ jobs.upload-image.outputs.image_name }}
 
 permissions:
   contents: read
@@ -25,7 +29,7 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/${{ inputs.app_name }}-${{ inputs.package_name }}
 
 jobs:
-  test:
+  upload-image:
     runs-on: ubuntu-latest
     outputs:
       image_name: ${{ steps.set-output.outputs.image_name }}
@@ -47,16 +51,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build Docker image
         run: |
           # Build and push image if directory exists
           if [ -d "./packages/${{ inputs.package_name }}" ]; then
-            echo "Building and pushing ${{ inputs.package_name }} image..."
+            echo "Building ${{ inputs.package_name }} image..."
             docker build \
               -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
               -t ${{ env.IMAGE_NAME }}:latest \
               -f ./packages/frontend/Dockerfile \
               --build-arg APP_NAME=${{ inputs.app_name }} .
+          fi
+
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          # Check if the image was built
+          if docker images -q ${{ env.IMAGE_NAME }}:${{ github.sha }}; then
+            echo "Pushing ${{ inputs.package_name }} image to GitHub Container Registry..."
             docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
             docker push ${{ env.IMAGE_NAME }}:latest
+          else
+            echo "Error: Image ${{ env.IMAGE_NAME }}:${{ github.sha }} does not exist. Skipping push." >&2
+            exit 1
           fi
