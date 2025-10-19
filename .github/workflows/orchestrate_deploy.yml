@@ -64,6 +64,10 @@ jobs:
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
 
+  validate-deployment:
+    needs: start-app
+    uses: ./.github/workflows/validate-deployment.yml
+
   validate-port-reachable:
     needs: start-app
     uses: ./.github/workflows/validate-port-reachable.yml
@@ -71,7 +75,3 @@ jobs:
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
     secrets:
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
-
-  validate-deployment:
-    needs: validate-port-reachable
-    uses: ./.github/workflows/validate-deployment.yml

@@ -25,7 +25,7 @@ jobs:
       - name: Check Port Reachability from GitHub Worker
         run: |
           echo "Checking if port ${{ inputs.public_port }} can be reached..."
-          if nc -zv ${{ secrets.SERVER_HOST }} ${{ inputs.public_port }}; then
+          if nc -zvw5 ${{ secrets.SERVER_HOST }} ${{ inputs.public_port }}; then
             echo "Port ${{ inputs.public_port }} is reachable."
           else
             echo "Error: Port ${{ inputs.public_port }} is not reachable from the GitHub worker." >&2
