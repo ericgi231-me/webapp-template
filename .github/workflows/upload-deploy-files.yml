@@ -42,14 +42,14 @@ jobs:
   upload-deploy-files:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Setup Docker Buildx and Cache
         uses: ./.github/actions/setup-docker-cache
         with:
           app_name: ${{ inputs.app_name }}
-
-      - name: Checkout code
-        uses: actions/checkout@v5
-
+          
       - name: Create .env file
         run: |
           cat > .env << EOF
