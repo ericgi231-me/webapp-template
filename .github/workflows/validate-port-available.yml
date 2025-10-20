@@ -35,6 +35,11 @@ jobs:
   check-port-status:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Docker Buildx and Cache
+        uses: ./.github/actions/setup-docker-cache
+        with:
+          app_name: ${{ inputs.app_name }}
+
       - name: Check Port availability on Server
         uses: appleboy/ssh-action@v1.0.0
         with:

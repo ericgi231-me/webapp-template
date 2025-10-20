@@ -1,5 +1,7 @@
-name: Orchestrate deployment to Production
+name: Orchestrate Deployment
 run-name: Deploying ${{ github.sha }} to production
+#TODO: add caching to speed up workflow runs
+#TODO: maybe add composite actions?
 
 on:
   # Uncomment to deploy on push to main branch on push
@@ -64,9 +66,15 @@ jobs:
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
 
-  validate-deployment:
+  validate-continaer-health:
     needs: start-app
-    uses: ./.github/workflows/validate-deployment.yml
+    uses: ./.github/workflows/validate-container-health.yml
+    with:
+      app_name: ${{ vars.APP_NAME || 'webapp-template' }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
 
   validate-port-reachable:
     needs: start-app
