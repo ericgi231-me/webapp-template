@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   validate-port-available:
-    uses: ./.github/workflows/validate-port-available.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/validate-port-available.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
@@ -26,7 +26,7 @@ jobs:
 
   upload-frontend-image:
     needs: validate-port-available
-    uses: ./.github/workflows/upload-image.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/upload-image.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
@@ -34,7 +34,7 @@ jobs:
 
   upload-backend-image:
     needs: validate-port-available
-    uses: ./.github/workflows/upload-image.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/upload-image.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
@@ -42,7 +42,7 @@ jobs:
 
   upload-deploy-files:
     needs: [upload-frontend-image, upload-backend-image]
-    uses: ./.github/workflows/upload-deploy-files.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/upload-deploy-files.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
@@ -56,7 +56,7 @@ jobs:
 
   start-app:
     needs: [upload-frontend-image, upload-backend-image, upload-deploy-files]
-    uses: ./.github/workflows/start-app.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/start-app.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
       frontend_image_name: ${{ needs.upload-frontend-image.outputs.image_name }}
@@ -68,7 +68,7 @@ jobs:
 
   validate-continaer-health:
     needs: start-app
-    uses: ./.github/workflows/validate-container-health.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/validate-container-health.yml@main
     with:
       app_name: ${{ vars.APP_NAME || 'webapp-template' }}
     secrets:
@@ -78,7 +78,7 @@ jobs:
 
   validate-port-reachable:
     needs: start-app
-    uses: ./.github/workflows/validate-port-reachable.yml
+    uses: ericgi231-me/webapp-template/.github/workflows/validate-port-reachable.yml@main
     with:
       public_port: ${{ vars.PUBLIC_PORT || '8080' }}
     secrets:
