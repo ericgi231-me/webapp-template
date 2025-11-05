@@ -12,7 +12,22 @@ export default defineConfig(({ mode }) => {
     base,
     plugins: [
       react(),
-      tailwindcss()
+      tailwindcss(),
+      // dev-only middleware to redirect bare base path to trailing-slash variant
+      {
+        name: 'vite-plugin-trailing-slash',
+        configureServer(server: any) {
+          server.middlewares.use((req: any, res: any, next: any) => {
+            const url = req.url || '';
+            if (env.APP_NAME && url === `/${env.APP_NAME}`) {
+              res.writeHead(301, { Location: `/${env.APP_NAME}/` });
+              res.end();
+              return;
+            }
+            next();
+          });
+        },
+      }
     ],
     server: {
       host: true,
