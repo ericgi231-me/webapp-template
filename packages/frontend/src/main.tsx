@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
-const baseName = `/${process.env.APP_NAME}` || 'app'
+const baseName = `/${import.meta.env.VITE_APP_NAME ?? 'app'}`
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

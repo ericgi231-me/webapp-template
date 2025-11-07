@@ -1,6 +1,8 @@
 services:
   frontend:
     image: ${FRONTEND_IMAGE_NAME:-org/frontend}:latest
+    cpus: 0.5
+    mem_limit: 256m
     build: 
       context: .
       dockerfile: packages/frontend/Dockerfile
@@ -23,6 +25,8 @@ services:
 
   backend:
     image: ${BACKEND_IMAGE_NAME:-org/backend}:latest
+    cpus: 0.5
+    mem_limit: 256m
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
@@ -43,6 +47,8 @@ services:
 
   database:
     image: postgres:15-alpine
+    cpus: 0.5
+    mem_limit: 256m
     environment:
       - POSTGRES_DB=webapp_db
       - POSTGRES_USER=postgres

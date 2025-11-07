@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import Fastify from 'fastify'
 import app from './app.js'
-import { DEFAULT_CONFIG } from 'shared'
 
 const isDev = process.env.NODE_ENV !== 'production'
 

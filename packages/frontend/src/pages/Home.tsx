@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
-import { add } from 'shared';
 
 const Home = () => {
   const [count, setCount] = useState(0)
@@ -34,7 +33,7 @@ const Home = () => {
           <img src={reactLogo} className="w-16 h-16" alt="React logo" />
         </a>
       </div>
-      <h1 className="text-4xl font-bold mb-4">Vite + React { add(1, 2) }</h1>
+      <h1 className="text-4xl font-bold mb-4"> text </h1>
       <div className="card bg-white shadow-md rounded-lg p-6">
         <button 
           onClick={() => setCount((count) => count + 1)}
