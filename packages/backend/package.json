@@ -3,20 +3,15 @@
   "version": "1.0.0",
   "description": "This project was bootstrapped with Fastify-CLI.",
   "main": "dist/server.js",
-  "source": "server.ts",
+  "source": "src/server.ts",
   "type": "module",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "dev": "tsx watch --clear-screen=false server.ts",
+    "dev": "tsx watch --clear-screen=false src/server.ts",
     "build": "tsc -b",
     "lint": "eslint .",
-    "test": "node --test test/**/*.test.js",
+    "test": "node --test src/test/**/*.test.js",
     "start": "node dist/server.js"    
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "shared": "file:../shared",

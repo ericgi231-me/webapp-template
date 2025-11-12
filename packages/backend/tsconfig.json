@@ -2,7 +2,7 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
 
     // Environment Settings
@@ -17,7 +17,9 @@
     "baseUrl": "./",
     "paths": {
       "shared": ["../shared/src/index.ts"],
-      "shared/*": ["../shared/src/*"]
+      "shared/*": ["../shared/src/*"],
+      "src": ["./src/index.ts"],
+      "src/*": ["./src/*"]
     },
 
     // Other Outputs
