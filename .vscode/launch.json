@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug Frontend (Chrome)",
+      "url": "http://localhost:${env:VITE_DEV_FRONTEND_PORT}/${env:APP_NAME}/",
+      "webRoot": "${workspaceFolder}/packages/frontend",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "/*": "${webRoot}/src/*"
+      }
+    }
+  ],
+}
