@@ -1,7 +1,7 @@
 import type { FastifyPluginAsync } from 'fastify'
 
-const messageRoutes: FastifyPluginAsync = async function (fastify, opts) {
-  fastify.get('/message', async function (request, reply) {
+const messageRoutes: FastifyPluginAsync = async function (fastify, _opts) {
+  fastify.get('/message', async function (_request, _reply) {
     return 'This is a message'
   })
 }

@@ -8,6 +8,7 @@ ENV APP_NAME=${APP_NAME}
 # Copy workspace configuration
 # Copy root package metadata and the frontend package metadata first to use layer caching
 COPY package*.json ./
+COPY tsconfig.base.json ./
 COPY packages/frontend/package*.json ./packages/frontend/
 COPY packages/shared/package*.json ./packages/shared/
 

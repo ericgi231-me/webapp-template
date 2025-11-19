@@ -5,9 +5,11 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const base = `/${env.APP_NAME || 'app'}/`;
-  const port = Number.parseInt(env.VITE_DEV_FRONTEND_PORT) || 5173;
-  const target = `http://localhost:${env.VITE_DEV_BACKEND_PORT}` || 'http://localhost:3000';
+  const appName = env.APP_NAME || 'app';
+  const base = `/${appName}/`;
+  const port = Number.parseInt(env.VITE_DEV_FRONTEND_PORT || '5173');
+  const backendPort = env.VITE_DEV_BACKEND_PORT || '3000';
+  const target = `http://localhost:${backendPort}`;
   return {
     base,
     plugins: [
@@ -19,8 +21,8 @@ export default defineConfig(({ mode }) => {
         configureServer(server: any) {
           server.middlewares.use((req: any, res: any, next: any) => {
             const url = req.url || '';
-            if (env.APP_NAME && url === `/${env.APP_NAME}`) {
-              res.writeHead(301, { Location: `/${env.APP_NAME}/` });
+            if (url === `/${appName}`) {
+              res.writeHead(301, { Location: `/${appName}/` });
               res.end();
               return;
             }
@@ -33,16 +35,16 @@ export default defineConfig(({ mode }) => {
       host: true,
       port,
       proxy: {
-        [`/${env.APP_NAME}/api`]: {
+        [`/${appName}/api`]: {
           target,
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(new RegExp(`^/${env.APP_NAME}/api`), ''),
+          rewrite: (path) => path.replace(new RegExp(`^/${appName}/api`), ''),
         },
       },
     },
     define: {
-      'process.env.APP_NAME': JSON.stringify(env.APP_NAME),
+      'process.env.APP_NAME': JSON.stringify(appName),
     },
   };
 });

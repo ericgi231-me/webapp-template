@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import Fastify from 'fastify'
 import app from './app.js'
 
@@ -26,7 +25,7 @@ fastify.register(app)
 
 const start = async (): Promise<void> => {
   try {
-    const port = isDev ? Number.parseInt(process.env.VITE_DEV_BACKEND_PORT!) : 3000;
+    const port = Number.parseInt(process.env.BACKEND_PORT || '5174');
     const host = '0.0.0.0'
     
     await fastify.listen({ port, host })

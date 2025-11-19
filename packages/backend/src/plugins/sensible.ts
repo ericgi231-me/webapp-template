@@ -6,7 +6,7 @@ import type { FastifyPluginAsync } from 'fastify'
  * This plugin adds some utilities to handle http errors
  * @see https://github.com/fastify/fastify-sensible
  */
-const sensiblePlugin: FastifyPluginAsync = async function (fastify, opts) {
+const sensiblePlugin: FastifyPluginAsync = async function (fastify, _opts) {
   await fastify.register(sensible)
 }
 
