@@ -10,7 +10,7 @@ const Home = () => {
     try {
       // import.meta.env.BASE_URL is set by Vite and should include the base (e.g. /webapp-template/)
       const base = (import.meta as any).env?.BASE_URL || '/';
-      const url = `${base}api/v1/examples/math/add/${a}/${b}`;
+      const url = `${base}api/v1/example/math/add/${a}/${b}`;
       const res = await fetch(url, { method: 'GET' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();

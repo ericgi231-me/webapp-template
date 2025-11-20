@@ -25,7 +25,7 @@ fastify.register(app)
 
 const start = async (): Promise<void> => {
   try {
-    const port = Number.parseInt(process.env.BACKEND_PORT || '5174');
+    const port = Number.parseInt(process.env.DEV_BACKEND_PORT || '3000');
     const host = '0.0.0.0'
     
     await fastify.listen({ port, host })

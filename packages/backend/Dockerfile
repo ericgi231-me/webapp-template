@@ -7,7 +7,6 @@ WORKDIR /app
 
 # Copy workspace configuration
 COPY package*.json ./
-COPY tsconfig.base.json ./
 COPY packages/backend/package*.json ./packages/backend/
 
 # Copy only package metadata first to leverage docker layer caching for npm install

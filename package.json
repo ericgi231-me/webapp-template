@@ -11,16 +11,14 @@
     "packages/database"
   ],
   "scripts": {
-    "dev": "turbo dev",
-    "dev:frontend": "npm run dev -w frontend",
-    "dev:backend": "npm run dev -w backend",
-    "dev:shared": "npm run dev -w shared",
-
-    "build": "turbo build",
+    "dev": "dotenv -- turbo dev",
+    "dev:frontend": "dotenv -- npm run dev -w frontend",
+    "dev:backend": "dotenv -- npm run dev -w backend",
+    "dev:shared": "dotenv -- npm run dev -w shared",
+    "build": "dotenv -e .env -- turbo build",
     "build:frontend": "npm run build -w frontend",
     "build:backend": "npm run build -w backend",
     "build:shared": "npm run build -w shared",
-
     "start": "npm run preview -w frontend",
     "test": "turbo test",
     "lint": "turbo lint",
@@ -34,8 +32,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "concurrently": "^8.0.0",
     "del-cli": "^7.0.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "turbo": "^2.6.1"
   },
@@ -45,6 +43,7 @@
   },
   "dependencies": {
     "@types/node": "^24.7.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   }
 }
