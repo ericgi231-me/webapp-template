@@ -1,49 +1,21 @@
 {
   "name": "webapp-template",
   "version": "1.0.0",
-  "description": "Full-stack web application template with Docker orchestration",
+  "description": "Full-stack web application template",
   "private": true,
   "packageManager": "npm@10.0.0",
   "workspaces": [
-    "packages/frontend",
-    "packages/backend",
-    "packages/shared",
-    "packages/database"
+    "packages/*"
   ],
   "scripts": {
-    "dev": "dotenv -- turbo dev",
-    "dev:frontend": "dotenv -- npm run dev -w frontend",
-    "dev:backend": "dotenv -- npm run dev -w backend",
-    "dev:shared": "dotenv -- npm run dev -w shared",
-    "build": "dotenv -e .env -- turbo build",
-    "build:frontend": "npm run build -w frontend",
-    "build:backend": "npm run build -w backend",
-    "build:shared": "npm run build -w shared",
-    "start": "npm run preview -w frontend",
-    "test": "turbo test",
-    "lint": "turbo lint",
-    "clean": "del-cli \"packages/*/node_modules\" \"packages/*/dist\"",
-    "clean:deep": "del-cli \"node_modules\" \"packages/*/node_modules\" \"packages/*/dist\"",
-    "docker:dev": "docker compose up --build",
-    "docker:prod": "docker compose up --build -d",
-    "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f",
-    "docker:clean": "docker compose down -v && docker system prune -f"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "del-cli": "^7.0.0",
-    "dotenv-cli": "^11.0.0",
-    "eslint": "^9.36.0",
-    "turbo": "^2.6.1"
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
-  "dependencies": {
-    "@types/node": "^24.7.2",
-    "tsc-alias": "^1.8.16",
-    "typescript": "^5.9.3"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   }
 }

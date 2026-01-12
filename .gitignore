@@ -1,4 +1,4 @@
-node_modules
-tsconfig.tsbuildinfo
-dist
-.turbo
+node_modules/
+dist/
+.vscode/
+.env
