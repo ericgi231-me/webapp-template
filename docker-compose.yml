@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: packages/fastify/Dockerfile
+    container_name: webapp-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    networks:
+      - webapp-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/react/Dockerfile
+    container_name: webapp-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - webapp-network
+
+networks:
+  webapp-network:
+    driver: bridge
