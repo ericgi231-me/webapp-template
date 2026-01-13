@@ -31,7 +31,7 @@
     "update-locks": "npm install --package-lock-only --workspaces",
 
     "docker:build": "docker compose build",
-    "docker:start": "docker up --build -d",
+    "docker:start": "docker compose up --build -d",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
