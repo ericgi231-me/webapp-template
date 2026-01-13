@@ -1,9 +1,9 @@
-import { HomeInfo } from '../components'
+import { RestExamples } from '../components'
 
 function RestPage() {
   return (
     <>
-      <HomeInfo />
+      <RestExamples />
     </>
   )
 }
