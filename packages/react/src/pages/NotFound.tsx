@@ -1,9 +1,8 @@
-import './Home.css'
-
 function NotFound() {
   return (
     <>
       <p>404 - Not Found</p>
+      <a href="/">Go back to Home</a>
     </>
   )
 }
