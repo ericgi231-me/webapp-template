@@ -1,12 +1,13 @@
 import fp from 'fastify-plugin'
-import sensible, { type FastifySensibleOptions } from '@fastify/sensible'
-import type { FastifyInstance } from 'fastify'
+import sensible from '@fastify/sensible'
+import type { FastifyPluginAsync } from 'fastify'
 
 /**
- * This plugins adds some utilities to handle http errors
- *
+ * This plugin adds some utilities to handle http errors
  * @see https://github.com/fastify/fastify-sensible
  */
-export default fp<FastifySensibleOptions>(async (fastify: FastifyInstance) => {
-  fastify.register(sensible)
-})
+const sensiblePlugin: FastifyPluginAsync = async (fastify, _opts) => {
+  await fastify.register(sensible)
+}
+
+export default fp(sensiblePlugin)

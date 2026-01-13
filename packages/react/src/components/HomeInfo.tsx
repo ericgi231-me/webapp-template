@@ -15,7 +15,7 @@ function HomeInfo() {
       <h1 className="text-3xl md:text-4xl font-semibold text-center mb-8">
         Web-App Template
       </h1>
-      <dl className="max-w-2xl w-full space-y-6 flex flex-col md:flex-row md:space-x-8 md:space-y-0 md:justify-center">
+      <dl className=" w-full space-y-6 flex flex-col md:flex-row md:space-x-8 md:space-y-0 md:justify-center">
         <div className="border-l-4 border-blue-500 pl-4 pr-4 py-3 bg-gray-800 rounded">
           <dt className="text-xl font-semibold mb-2 text-white">Frontend</dt>
           <dd className="ml-4 text-gray-100 list-disc list-item">Vite build engine</dd>
@@ -34,6 +34,12 @@ function HomeInfo() {
           <dd className="ml-4 text-gray-100 list-disc list-item">Docker</dd>
           <dd className="ml-4 text-gray-100 list-disc list-item">Nginx</dd>
           <dd className="ml-4 text-gray-100 list-disc list-item">GitHub Actions</dd>
+        </div>
+        <div className="border-l-4 border-purple-500 pl-4 pr-4 py-3 bg-gray-800 rounded">
+          <dt className="text-xl font-semibold mb-2 text-white">Development</dt>
+          <dd className="ml-4 text-gray-100 list-disc list-item">Vitest</dd>
+          <dd className="ml-4 text-gray-100 list-disc list-item">Swagger</dd>
+          <dd className="ml-4 text-gray-100 list-disc list-item">Eslint</dd>
         </div>
       </dl>
     </div>

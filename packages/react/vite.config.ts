@@ -23,6 +23,11 @@ export default defineConfig(({ mode }) => {
           secure: false,
           rewrite: (path) => path.replace(new RegExp(`^/api`), ''),
         },
+        '/docs': {
+          target,
+          changeOrigin: true,
+          secure: false,
+        },
       },
     }
   }
