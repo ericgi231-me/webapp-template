@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { FastifyInstance } from 'fastify'
+import type { FastifyInstance } from 'fastify'
 
 export interface SupportPluginOptions {
   // Specify Support plugin options here

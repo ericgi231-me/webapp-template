@@ -1,6 +1,6 @@
 import { HomeInfo } from '../components'
 
-function Home() {
+function HomePage() {
   return (
     <>
       <HomeInfo />
@@ -8,4 +8,4 @@ function Home() {
   )
 }
 
-export default Home
+export default HomePage

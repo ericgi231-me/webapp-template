@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path'
 import AutoLoad from '@fastify/autoload'
-import { FastifyPluginAsync } from 'fastify'
+import type { FastifyPluginAsync } from 'fastify'
 import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)

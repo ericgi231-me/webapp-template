@@ -1,22 +1,22 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { createTestApp } from '../helper.js'
 
-describe('Root Route Tests', () => {
+describe('REST Route Tests', () => {
   let app: Awaited<ReturnType<typeof createTestApp>>
 
   afterEach(async () => {
     if (app) await app.close()
   })
 
-  it('should return root response', async () => {
+  it('should return example message', async () => {
     app = await createTestApp()
 
     const response = await app.inject({
       method: 'GET',
-      url: '/'
+      url: '/rest/'
     })
 
     expect(response.statusCode).toBe(200)
-    expect(response.json()).toEqual({ root: true })
+    expect(response.body).toBe('this is an example')
   })
 })

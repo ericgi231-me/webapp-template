@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import { Home, NotFound } from './pages'
+import { HomePage, NotFoundPage, RestPage, SocketPage } from './pages'
 import { Header } from './components'
 
 function App() {
@@ -7,8 +7,10 @@ function App() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/rest" element={<RestPage />} />
+        <Route path="/socket" element={<SocketPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   )
