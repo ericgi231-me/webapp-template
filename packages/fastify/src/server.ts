@@ -13,7 +13,7 @@ const server = Fastify({
   }
 })
 
-await server.register(app)
+await server.register(app);
 
 const start = async () => {
   try {
