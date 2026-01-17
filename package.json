@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "run-p dev:*",
+    "dev": "run-p --print-label dev:*",
     "dev:frontend": "npm run dev -w react",
     "dev:backend": "npm run dev -w fastify",
     

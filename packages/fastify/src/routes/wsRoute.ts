@@ -1,8 +1,9 @@
+import { WebsocketHandler } from '@fastify/websocket';
 import type { FastifyPluginAsync } from 'fastify'
-import type { WebsocketHandler } from '@fastify/websocket'
 
-const socket: FastifyPluginAsync = async (fastify): Promise<void> => {
-  const wsHandler: WebsocketHandler = (socket, request) => {
+const wsRoute: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
+
+  const wsHandler: WebsocketHandler = (socket, _request) => {
     console.log('Client connected');
     
     socket.send('Connected to Fastify WebSocket server!');
@@ -17,8 +18,9 @@ const socket: FastifyPluginAsync = async (fastify): Promise<void> => {
       console.log('Client disconnected');
     });
   };
-  
-  fastify.get('/ws', { websocket: true }, wsHandler as any);
+
+  // @ts-expect-error - TypeScript doesn't resolve the WebSocket overload in this setup
+  fastify.get('/ws', { websocket: true }, wsHandler);
 }
 
-export default socket
+export default wsRoute
