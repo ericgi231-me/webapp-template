@@ -11,12 +11,12 @@ const app: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     dir: join(__dirname, 'plugins'),
     options: opts,
     ignorePattern: process.env.NODE_ENV === 'production' ? /^dev\./ : undefined
-  })
+  });
 
   void fastify.register(AutoLoad, {
     dir: join(__dirname, 'routes'),
     options: opts
-  })
+  });
 }
 
 export default app

@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest'
-import { createTestApp } from '../helper.js'
+import { createTestApp } from '../../helper.js'
 
-describe('Root Route Tests', () => {
+describe('Math Route Tests', () => {
   let app: Awaited<ReturnType<typeof createTestApp>>
 
   beforeEach(async () => {
@@ -12,26 +12,27 @@ describe('Root Route Tests', () => {
     if (app) await app.close();
   });
 
-  it('should return root response', async () => {
+  it('should add two numbers', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: '/'
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual({ root: true });
-  });
-
-  it('should return health check response', async () => {
-
-    const response = await app.inject({
-      method: 'GET',
-      url: '/health'
+      url: '/v1/add/5/10'
     });
 
     expect(response.statusCode).toBe(200);
     const jsonResponse = response.json();
-    expect(jsonResponse).toHaveProperty('status', 'ok');
-    expect(jsonResponse).toHaveProperty('timestamp');
+    expect(jsonResponse).toHaveProperty('status', 'success');
+    expect(jsonResponse).toHaveProperty('data', 15);
+  });
+
+    it('should subtract two numbers', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/sub?num1=10&num2=5'
+    });
+
+    expect(response.statusCode).toBe(200);
+    const jsonResponse = response.json();
+    expect(jsonResponse).toHaveProperty('status', 'success');
+    expect(jsonResponse).toHaveProperty('data', 5);
   });
 })

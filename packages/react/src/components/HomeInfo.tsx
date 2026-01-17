@@ -26,7 +26,6 @@ function HomeInfo() {
         <div className="border-l-4 border-green-500 pl-4 pr-4 py-3 bg-gray-800 rounded">
           <dt className="text-xl font-semibold mb-2 text-white">Backend</dt>
           <dd className="ml-4 text-gray-100 list-disc list-item">Fastify web framework</dd>
-          <dd className="ml-4 text-gray-100 list-disc list-item">Drizzle ORM</dd>
           <dd className="ml-4 text-gray-100 list-disc list-item">TypeScript</dd>
         </div>
         <div className="border-l-4 border-purple-500 pl-4 pr-4 py-3 bg-gray-800 rounded">
@@ -38,7 +37,6 @@ function HomeInfo() {
         <div className="border-l-4 border-purple-500 pl-4 pr-4 py-3 bg-gray-800 rounded">
           <dt className="text-xl font-semibold mb-2 text-white">Development</dt>
           <dd className="ml-4 text-gray-100 list-disc list-item">Vitest</dd>
-          <dd className="ml-4 text-gray-100 list-disc list-item">Swagger</dd>
           <dd className="ml-4 text-gray-100 list-disc list-item">Eslint</dd>
         </div>
       </dl>

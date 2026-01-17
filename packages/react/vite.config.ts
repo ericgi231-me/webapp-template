@@ -22,12 +22,7 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(new RegExp(`^/api`), ''),
-        },
-        '/docs': {
-          target,
-          changeOrigin: true,
-          secure: false,
-        },
+        }
       },
     }
   }

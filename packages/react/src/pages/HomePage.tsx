@@ -1,9 +1,10 @@
-import { HomeInfo } from '../components'
+import { HomeInfo, RestExamples } from '../components'
 
 function HomePage() {
   return (
     <>
       <HomeInfo />
+      <RestExamples />
     </>
   )
 }

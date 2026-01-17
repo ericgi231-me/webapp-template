@@ -7,7 +7,7 @@ import type { FastifyPluginAsync } from 'fastify'
  * @see https://github.com/fastify/fastify-sensible
  */
 const sensiblePlugin: FastifyPluginAsync = async (fastify, _opts) => {
-  await fastify.register(sensible)
+  await fastify.register(sensible);
 }
 
 export default fp(sensiblePlugin)
