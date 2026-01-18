@@ -113,6 +113,7 @@ jobs:
             FRONTEND_IMAGE=$FRONTEND_IMAGE
             BACKEND_IMAGE=$BACKEND_IMAGE
             PUBLIC_PORT=$PUBLIC_PORT
+            APP_NAME=$APP_NAME
             EOF
             
             # Pull latest images
