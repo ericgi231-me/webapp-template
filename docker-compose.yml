@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: packages/fastify/Dockerfile
+    image: ${BACKEND_IMAGE:-webapp-template-backend:latest}
     container_name: webapp-backend
     environment:
       - NODE_ENV=production
@@ -15,9 +16,10 @@ services:
     build:
       context: .
       dockerfile: packages/react/Dockerfile
+    image: ${FRONTEND_IMAGE:-webapp-template-frontend:latest}
     container_name: webapp-frontend
     ports:
-      - "8080:80"
+      - "${PUBLIC_PORT:-8080}:80"
     depends_on:
       - backend
     restart: unless-stopped
