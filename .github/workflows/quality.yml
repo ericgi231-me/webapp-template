@@ -1,8 +1,7 @@
 name: Quality Checks
-description: Continuous Integration workflow for linting, testing, and building the project.
+description: Runs linting and tests on all branches to ensure code quality.
 
 on:
-  workflow_dispatch:
   pull_request:
   push:
 
