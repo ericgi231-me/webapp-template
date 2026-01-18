@@ -24,7 +24,7 @@ services:
       internal:
       web:
         aliases:
-          - "${APP_NAME}"
+          - "${APP_NAME:-webapp}"
 
 networks:
   internal:
