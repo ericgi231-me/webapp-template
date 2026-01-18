@@ -15,7 +15,7 @@ export default defineConfig([
       ecmaVersion: 2022,
       globals: globals.node,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },

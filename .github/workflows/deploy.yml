@@ -1,4 +1,5 @@
 name: Deploy to Production
+description: Continuous Deployment workflow for building and deploying the application to production.
 
 on:
   workflow_dispatch:
@@ -11,10 +12,40 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository }}
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository }}/frontend:latest
+  BACKEND_IMAGE: ghcr.io/${{ github.repository }}/backend:latest
+  APP_NAME: ${{ github.event.repository.name }}
 
 jobs:
-  deploy:
+  build-backend:
+    name: Build Backend Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/fastify/Dockerfile
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-frontend:
+    name: Build Frontend Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,19 +67,17 @@ jobs:
           context: .
           file: ./packages/react/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/frontend:latest
+          tags: ${{ env.FRONTEND_IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push backend
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./packages/fastify/Dockerfile
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/backend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Upload docker-compose to server
         uses: appleboy/scp-action@v0.1.7
@@ -57,23 +86,23 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "docker-compose.yml"
-          target: "/opt/${{ vars.APP_NAME || 'webapp-template' }}"
+          target: "~/apps/${{ env.APP_NAME }}"
           strip_components: 0
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/frontend:latest
-          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/backend:latest
-          PUBLIC_PORT: ${{ vars.PUBLIC_PORT || '8080' }}
-          APP_NAME: ${{ vars.APP_NAME || 'webapp-template' }}
+          FRONTEND_IMAGE: ${{ env.FRONTEND_IMAGE }}
+          BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
+          PUBLIC_PORT: ${{ vars.PUBLIC_PORT }}
+          APP_NAME: ${{ env.APP_NAME }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: FRONTEND_IMAGE,BACKEND_IMAGE,PUBLIC_PORT,APP_NAME
           script: |
-            cd /opt/$APP_NAME
+            cd ~/apps/$APP_NAME
             
             # Create/update .env file with image names
             cat > .env << EOF
@@ -91,9 +120,32 @@ jobs:
             
             # Start new containers
             docker compose up -d
-            
-            # Wait for health check
-            sleep 5
-            
-            # Verify containers are running
+
+  validate:
+    name: Validate Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Wait for services
+        run: sleep 10
+
+      - name: Check container health
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP_NAME: ${{ env.APP_NAME }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: APP_NAME
+          script: |
+            cd ~/apps/$APP_NAME
             docker compose ps
+            
+            # Check if containers are running
+            if ! docker compose ps | grep -q "Up"; then
+              echo "❌ Containers are not running"
+              exit 1
+            fi
+            
+            echo "✅ Deployment successful"
