@@ -15,8 +15,8 @@ services:
       context: .
       dockerfile: packages/react/Dockerfile
     image: ${FRONTEND_IMAGE}
-    ports:
-      - "${PUBLIC_PORT:-8080}:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     restart: unless-stopped
@@ -24,7 +24,7 @@ services:
       internal:
       web:
         aliases:
-          - "${APP_NAME:-webapp}"
+          - "${APP_NAME:-template}"
 
 networks:
   internal:
