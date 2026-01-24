@@ -1,9 +1,13 @@
 services:
   backend:
+    # Build from local Dockerfile in dev, skip in prod
     build:
       context: .
       dockerfile: packages/fastify/Dockerfile
-    image: ${BACKEND_IMAGE}
+    # Use local image for dev, use remote image in prod
+    image: ${BACKEND_IMAGE:?need BACKEND_IMAGE}
+    expose:
+      - "3000"
     environment:
       - NODE_ENV=production
     restart: unless-stopped
@@ -11,10 +15,12 @@ services:
       - internal
 
   frontend:
+    # Build from local Dockerfile in dev, skip in prod
     build:
       context: .
       dockerfile: packages/react/Dockerfile
-    image: ${FRONTEND_IMAGE}
+    # Use local image for dev, use remote image in prod
+    image: ${FRONTEND_IMAGE:?need FRONTEND_IMAGE}
     expose:
       - "80"
     depends_on:
@@ -23,11 +29,14 @@ services:
     networks:
       internal:
       web:
+        # Define a network alias for easier access to the frontend service
         aliases:
-          - "${APP_NAME:-template}"
+          - "${APP_NAME:?need APP_NAME}"
 
 networks:
+  # Internal network for inter-service communication
   internal:
     driver: bridge
+  # External network for exposing services to other containers
   web:
     external: true
