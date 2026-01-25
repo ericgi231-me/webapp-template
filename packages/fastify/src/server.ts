@@ -1,27 +1,25 @@
 import Fastify from 'fastify'
 import app from './app.js'
+import config from './config.js'
 
-const server = Fastify({
-  logger: {
-    ...(process.env.NODE_ENV !== 'production' && {
-      transport: {
-        target: 'pino-pretty',
-        options: { colorize: true }
+const fastify = Fastify({
+  logger: config.isDev
+    ? {
+        transport: {
+          target: 'pino-pretty',
+          options: { colorize: true }
+        }
       }
-    })
-  }
-});
+    : true
+})
 
-await server.register(app);
+await fastify.register(app);
 
 const start = async () => {
   try {
-    const port = Number(process.env.DEV_PORT) || 3000
-    const host = '0.0.0.0'
-
-    await server.listen({ port, host })
+    await fastify.listen({ port: config.port, host: '0.0.0.0' })
   } catch (err) {
-    server.log.error(err)
+    fastify.log.error(err)
     process.exit(1)
   }
 }

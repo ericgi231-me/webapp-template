@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from 'fastify'
+import config from '../config.js';
 
 const rootRoute: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
   fastify.get('/', (_request, _reply) => {
@@ -14,7 +15,7 @@ const rootRoute: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
       status: 'ok',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development'
+      environment: config.env
     }
   });
 }
