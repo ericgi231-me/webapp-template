@@ -1,4 +1,5 @@
-import { describe, it, expect, afterEach, beforeEach } from 'vitest'
+import { describe, it, afterEach, beforeEach } from 'node:test'
+import assert from 'node:assert'
 import { createTestApp } from '../../helper.js'
 
 describe('Math Route Tests', () => {
@@ -18,21 +19,21 @@ describe('Math Route Tests', () => {
       url: '/v1/add/5/10'
     });
 
-    expect(response.statusCode).toBe(200);
+    assert.strictEqual(response.statusCode, 200);
     const jsonResponse = response.json();
-    expect(jsonResponse).toHaveProperty('status', 'success');
-    expect(jsonResponse).toHaveProperty('data', 15);
+    assert.strictEqual(jsonResponse.status, 'success');
+    assert.strictEqual(jsonResponse.data, 15);
   });
 
-    it('should subtract two numbers', async () => {
+  it('should subtract two numbers', async () => {
     const response = await app.inject({
       method: 'GET',
       url: '/v1/sub?num1=10&num2=5'
     });
 
-    expect(response.statusCode).toBe(200);
+    assert.strictEqual(response.statusCode, 200);
     const jsonResponse = response.json();
-    expect(jsonResponse).toHaveProperty('status', 'success');
-    expect(jsonResponse).toHaveProperty('data', 5);
+    assert.strictEqual(jsonResponse.status, 'success');
+    assert.strictEqual(jsonResponse.data, 5);
   });
 })

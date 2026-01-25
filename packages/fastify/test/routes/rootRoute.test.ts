@@ -1,4 +1,5 @@
-import { describe, it, expect, afterEach, beforeEach } from 'vitest'
+import { describe, it, afterEach, beforeEach } from 'node:test'
+import assert from 'node:assert'
 import { createTestApp } from '../helper.js'
 
 describe('Root Route Tests', () => {
@@ -18,11 +19,11 @@ describe('Root Route Tests', () => {
       url: '/'
     });
 
-    expect(response.statusCode).toBe(200);
+    assert.strictEqual(response.statusCode, 200);
     const jsonResponse = response.json();
-    expect(jsonResponse).toHaveProperty('name', 'Fastify API');
-    expect(jsonResponse).toHaveProperty('version', '1.0.0');
-    expect(jsonResponse).toHaveProperty('description', 'Full-stack web application template API');
+    assert.strictEqual(jsonResponse.name, 'Fastify API');
+    assert.strictEqual(jsonResponse.version, '1.0.0');
+    assert.strictEqual(jsonResponse.description, 'Full-stack web application template API');
   });
 
   it('should return health check response', async () => {
@@ -31,12 +32,12 @@ describe('Root Route Tests', () => {
       url: '/health'
     });
 
-    expect(response.statusCode).toBe(200);
+    assert.strictEqual(response.statusCode, 200);
     const jsonResponse = response.json();
-    expect(jsonResponse).toHaveProperty('status', 'ok');
-    expect(jsonResponse).toHaveProperty('timestamp');
-    expect(jsonResponse).toHaveProperty('uptime');
-    expect(jsonResponse).toHaveProperty('environment');
-    expect(typeof jsonResponse.uptime).toBe('number');
+    assert.strictEqual(jsonResponse.status, 'ok');
+    assert.ok('timestamp' in jsonResponse);
+    assert.ok('uptime' in jsonResponse);
+    assert.ok('environment' in jsonResponse);
+    assert.strictEqual(typeof jsonResponse.uptime, 'number');
   });
 })
